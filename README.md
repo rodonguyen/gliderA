@@ -1,6 +1,6 @@
-# gliderA
+# Glider Platform API
 
-The fast, stable and reliable Glider Platform REST API 
+The fast, stable and reliable [Glider Platform REST API](https://github.com/rodonguyen/gliderA). 
 
 ## Getting started
 
