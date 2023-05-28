@@ -11,22 +11,34 @@ router.get('/', async function(req, res) {
   const defaultSize = 10;
   
   // Retrieve the page and size parameters from the query string
-  const { page, size } = req.query;
-  
-  // Do something with the retrieved parameters
-  console.log(`Page: ${page}, Size: ${size}`);
+  const page = req.query.page
+  const size = req.query.size || defaultSize
+  // Calculate necessary values
+  const startAccountNumber  = (page - 1) * size + 1
+  const endAccountNumber    = page * size
+  const realStartPageNumber = Math.floor((startAccountNumber / 10))    // real is used on moodyGliderPlatform
+  const realEndPageNumber   = Math.floor((endAccountNumber / 10))      // real is used on moodyGliderPlatform
 
-  // Handle missing page value
+  // Do something with the retrieved parameters
+  console.log(`Query: Page ${page}, Size ${size}`);
+
+  // Handle missing `page` value
   if (!page) {
-    res.status(200).json({message: 'Missing `page` parameter'})
+    res.status(200).json({
+      queryParams: {page: page, size: size}, 
+      message: 'Missing `page` parameter. Your URL should look like this: http://localhost:3030/v1/accounts?page=7&size=8'})
+    return 
+  }
+
+  // Check if `page` and `size` values are accepted (too large)
+  const existLastRealPage = await moodyGliderPlatform.requestAccountsInAPage(realEndPageNumber)
+  if (! existLastRealPage) {
+    res.status(200).json({
+      queryParams: {page: page, size: size}, 
+      message: 'Page and size number is too large. Thus, the last account is not found in the database.'})
     return
   }
 
-  // Handle page value not accepted (too large)
-  // ...
-
-
-  
   // Check Redis if it has all the accounts from [(page-1)*size + 1, page*size] inclusive
   // Query Redis here
   // ...
@@ -40,10 +52,7 @@ router.get('/', async function(req, res) {
   // Example: 3,22 -> 44->66
 
   // Find all the account numbers missing from Redis
-  const startAccountNumber = (page - 1) * size + 1
-  const endAccountNumber = page * size
-  const realStartPageNumber = Math.floor((startAccountNumber / 10)) 
-  const realEndPageNumber = Math.floor((endAccountNumber / 10)) 
+
   // const missingAccountPagesAndNumbers = {}
 
   // for (let realPage = realStartPageNumber; realPage <= realEndPageNumber; realPage++) {
@@ -65,17 +74,25 @@ router.get('/', async function(req, res) {
   // }
   // console.log(accounts)
 
-  const queriedAccounts = await moodyGliderPlatform.getAccounts(pageStart = realStartPageNumber, pageEnd = realEndPageNumber)
-                            .then((res) => console.log(res))
-
+  
   // If No, request the original API until it has all the required accounts
   // Request each page in parallel if possible
+  const queriedAccounts = await moodyGliderPlatform.getAccounts(pageStart = realStartPageNumber, pageEnd = realEndPageNumber)
+  // Slice and get only required accounts
+  const requiredAccounts = {}
+  for (let i = startAccountNumber; i <= endAccountNumber; i++) {
+    requiredAccounts[i] = queriedAccounts[i]
+  }
 
-    // Add them to Redis and return the result.
-
-
-  res.status(200).json({message: 'nothing for now.'})
   
+  // Add pages to Redis if they haven't been done so 
+  // ...
+
+  // Return the result
+  res.status(200).json({
+    queryParams: {page: page, size: size}, 
+    message: requiredAccounts
+  })  
 })
 
 

@@ -3,14 +3,16 @@ const axios = require("axios");
 async function requestAccountsInAPage(pageNumber) {
     const response = await axios.get(`https://moody.gliderplatform.com/page/${pageNumber}`)
                         .then(response => {
-                            // console.log('requestAccountsInAPage response.data page', pageNumber, response.data);
                             return response.data.message
                         })
                         .catch(error => {
                             if (error.response && error.response.status === 500) {
                                 return requestAccountsInAPage(pageNumber)
                             }
-                            // console.error(error);
+                            // 
+                            if (error.response && error.response.status === 400) {
+                                return false
+                            }
                         });
 
     // console.log('requestAccountsInAPage final response', pageNumber, response)
@@ -18,11 +20,10 @@ async function requestAccountsInAPage(pageNumber) {
 }
 
 function checkPageIsFull(response) {
-    console.log(response)
+    // console.log(response)
     for (let key in response) {
-        // console.log(key, response[key], response[key].account_number)
         if (!response[key].account_number) {
-            console.log('checkPageIsFull returns false')
+            // console.log('checkPageIsFull returns false')
             return false
         }
     }
@@ -39,13 +40,9 @@ const getAccounts = async (pageStart, pageEnd) =>  {
 
         while (!isFull) {
             queriedAccounts = await requestAccountsInAPage(page)
-            // console.log('queriedAccounts', queriedAccounts)
             isFull = checkPageIsFull(queriedAccounts)
         }
-        
-        // console.log('queriedAccounts, page', page, queriedAccounts)
         queriedAccounts.forEach((_, index) => {
-            // console.log(page*10+index)
             result[page*10+index] = queriedAccounts[index]
         })
     }
@@ -55,6 +52,7 @@ const getAccounts = async (pageStart, pageEnd) =>  {
 }
 
 module.exports = {
+    requestAccountsInAPage,
     getAccounts
   };
   
