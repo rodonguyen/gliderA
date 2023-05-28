@@ -7,28 +7,17 @@ require("dotenv").config();
 
 /* GET users listing. */
 router.get("/", async function (req, res) {
-    // res.status(200).json({message: 'This is /account endpoint.'})
+  
+  // Retrieve the page and size parameters from the query string
     const defaultSize = 10;
-
-    // Retrieve the page and size parameters from the query string
     const page = req.query.page;
     const size = req.query.size || defaultSize;
+
     // Calculate necessary values
     const startAccountNumber = (page - 1) * size + 1;
     const endAccountNumber = page * size;
     const realStartPageNumber = Math.ceil(startAccountNumber / 10); // real is used on moodyGliderPlatform
     const realEndPageNumber = Math.ceil(endAccountNumber / 10); // real is used on moodyGliderPlatform
-
-    // Do something with the retrieved parameters
-    console.log(`Query: Page ${page}, Size ${size}`);
-
-    // const redisClient = createClient({ url: process.env.REDIS_URL });
-    // redisClient.on("error", (err) => console.log("Redis Client Error", err));
-    // await redisClient.connect();
-    // const setRes = await redisClient.set("821", '{name: "Rodo Nguyen"}');
-    // // const value = await redisClient.get("821");
-    // console.log("example redis value:", setRes);
-    // await redisClient.disconnect();
 
     // Handle missing `page` value
     if (!page || page <= 0) {
@@ -54,22 +43,21 @@ router.get("/", async function (req, res) {
         return;
     }
 
-    // 1, 8 => 1->8,
-
     // Retrieve account data page by page
-    //   Check Redis first
-    //   If not exist on Redis,
-    //      request directly from moodyGliderPlatform and
-    //      backup in Redis
+    //    Check Redis first
+    //    If not exist on Redis,
+    //        Request directly from moodyGliderPlatform and
+    //        Bbackup in Redis
     const allQueriedAccount = {};
     const redisClient = createClient({ url: process.env.REDIS_URL });
     await redisClient.connect();
 
+    // TODO: Parallelize this for loop
     for (let page = realStartPageNumber; page <= realEndPageNumber; page++) {
         let queriedAccounts = false,
             isFull = false,
             isAvailableInRedis = false
-            
+        
         // Check Redis first
         queriedAccounts = await redisClient
             .get(page.toString())
@@ -104,7 +92,7 @@ router.get("/", async function (req, res) {
                 queriedAccounts[index];
         });
     }
-    await redisClient.quit();
+    redisClient.quit();
 
     // Slice and get only required accounts
     const requiredAccounts = {};
