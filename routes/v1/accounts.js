@@ -5,7 +5,7 @@ const moodyGliderPlatform = require("../../utils/moodyGliderPlatform");
 
 require("dotenv").config();
 
-/* GET users listing. */
+/* GET account info. */
 router.get("/", async function (req, res) {
   
   // Retrieve the page and size parameters from the query string
