@@ -33,29 +33,8 @@ function checkPageIsFull(response) {
 
 }
 
-const getAccounts = async (pageStart, pageEnd) =>  {
-
-    const result = {}
-
-    for (let page = pageStart; page <= pageEnd; page++) {
-        let queriedAccounts = false, isFull = false
-
-        while (!isFull) {
-            queriedAccounts = await requestAccountsInAPage(page)
-            isFull = checkPageIsFull(queriedAccounts)
-        }
-        queriedAccounts.forEach((_, index) => {
-            result[page*10+index] = queriedAccounts[index]
-        })
-    }
-
-    // console.log('result', result)
-    return result
-}
-
 module.exports = {
     requestAccountsInAPage,
-    checkPageIsFull,
-    getAccounts
+    checkPageIsFull
   };
   

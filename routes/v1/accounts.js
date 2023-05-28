@@ -106,14 +106,6 @@ router.get("/", async function (req, res) {
     }
     await redisClient.quit();
 
-    // // If No, request the original API until it has all the required accounts
-    // // Request each page in parallel if possible
-    // const queriedAccounts = await moodyGliderPlatform.getAccounts(
-    //     (pageStart = realStartPageNumber),
-    //     (pageEnd = realEndPageNumber)
-    // );
-
-
     // Slice and get only required accounts
     const requiredAccounts = {};
     for (let i = startAccountNumber; i <= endAccountNumber; i++) {
