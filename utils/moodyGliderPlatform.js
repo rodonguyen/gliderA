@@ -6,11 +6,13 @@ async function requestAccountsInAPage(pageNumber) {
                             return response.data.message
                         })
                         .catch(error => {
+                            // Error 500: "Internal Server Error"
                             if (error.response && error.response.status === 500) {
                                 return requestAccountsInAPage(pageNumber)
                             }
-                            // 
+                            // Error 400: "page number value not accepted"
                             if (error.response && error.response.status === 400) {
+                                // console.log(error.response)
                                 return false
                             }
                         });
@@ -53,6 +55,7 @@ const getAccounts = async (pageStart, pageEnd) =>  {
 
 module.exports = {
     requestAccountsInAPage,
+    checkPageIsFull,
     getAccounts
   };
   

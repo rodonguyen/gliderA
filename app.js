@@ -34,7 +34,7 @@ app.use(function(err, req, res, next) {
 });
 
 
-const port = 3030
+const port = 3030;
 app.listen(port, () => console.log(`~~~\nServer started. Running in port ${port}.`));
 
 module.exports = app;
