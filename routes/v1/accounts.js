@@ -17,7 +17,7 @@ router.get("/", async function (req, res) {
     const startAccountNumber = (page - 1) * size + 1;
     const endAccountNumber = page * size;
     const realStartPageNumber = Math.ceil(startAccountNumber / 10); // real is used on moodyGliderPlatform
-    const realEndPageNumber = Math.ceil(endAccountNumber / 10); // real is used on moodyGliderPlatform
+    const realEndPageNumber = Math.ceil(endAccountNumber / 10);     // real is used on moodyGliderPlatform
 
     // Handle missing `page` value
     if (!page || page <= 0) {
@@ -29,7 +29,7 @@ router.get("/", async function (req, res) {
         return;
     }
 
-    // Check if `page` and `size` values are accepted (too large)
+    // Check if `page` and `size` values are accepted (too large or negative)
     // console.log(realEndPageNumber)
     const existLastRealPage = await moodyGliderPlatform.requestAccountsInAPage(
         realEndPageNumber
