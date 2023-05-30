@@ -16,23 +16,20 @@ app.use(cookieParser());
 app.use('/', indexRouter);
 app.use('/v1/accounts', accountRouter);
 
-
 // Catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
+app.use(function (req, res, next) {
+	next(createError(404));
 });
 
 // Error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+app.use(function (err, req, res, next) {
+	// set locals, only providing error in development
+	res.locals.message = err.message;
+	res.locals.error = req.app.get('env') === 'development' ? err : {};
 
-  // Send error message
-  res.status(err.status || 500).json({errorCode: err.status, error: err});
-  // res.render('error');
+	// Send error message
+	res.status(err.status || 500).json({ errorCode: err.status, error: err });
 });
-
 
 const port = 3030;
 app.listen(port, () => console.log(`~~~\nServer started. Running in port ${port}.`));
