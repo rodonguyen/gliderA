@@ -1,6 +1,6 @@
 # Glider Platform API
 
-The fast, stable and reliable [Glider Platform REST API](https://github.com/rodonguyen/gliderA). 
+The fast, stable and reliable [Glider Platform REST API](https://github.com/rodonguyen/gliderA).   
 Response time for frequently used pages is usually under 2 seconds.
 
 Technologies used:
@@ -11,12 +11,12 @@ Technologies used:
 
 `npm i`  
 `npm start`  
-Then the app should be running at [http://localhost:3030](http://localhost:3030).
-Try your first request [http://localhost:3030/v1/accounts?page=9&size=50](http://localhost:3030/v1/accounts?page=9&size=50).
+Then the app should be running at [http://localhost:3030](http://localhost:3030).  
+Try your first request [http://localhost:3030/v1/accounts?page=28&size=50](http://localhost:3030/v1/accounts?page=28&size=50).  
 Change the number of `page` and `size (optional)` to your need.
 
 ## Future improvements
-- Parallelly retrieve account data for multiple pages
-- Data stored in Redis should have Time-To-Live if data change in the future
-- Slow redisClient's initialisation. Will move the initialisation to app.js and reuse it instead. 
-- Use [Redis-ObjectMapping](https://github.com/redis/redis-om-node) instead of [Redis](https://github.com/redis/node-redis) for easier data handling(?): reducing the effort of parsing String to JSON and preparing for growing `account` data complexity
+- Parallelly retrieve account data for multiple pages for faster response time.
+- Data stored in Redis should have Time-To-Live if data change in the future.
+- Move the initialisation to app.js and reuse it instead. It's having slow redisClient initialisation in [routes/v1/accounts.js](routes/v1/accounts.js).
+- Use [Redis-ObjectMapping](https://github.com/redis/redis-om-node) instead of [Redis](https://github.com/redis/node-redis) for easier data handling(?): reducing the effort of parsing String to JSON and preparing for growing `account` data complexity.
