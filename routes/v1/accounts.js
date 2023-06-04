@@ -110,6 +110,7 @@ const getPageData = async (page) => {
 	// Not exist on Redis, request from moodyGliderPlatform instead
 	if (!isFull) console.log(`Querying page ${page} from moodyGliderPlatform API.`);
 	while (!isFull) {
+		// Retry until the page is full
 		queriedAccounts = await moodyGliderPlatform.requestAccountsInAPage(page);
 		isFull = moodyGliderPlatform.checkPageIsFull(queriedAccounts);
 	}
