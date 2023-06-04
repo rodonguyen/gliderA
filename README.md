@@ -16,7 +16,7 @@ Try your first request [http://localhost:3030/v1/accounts?page=28&size=50](http:
 Change the number of `page` and `size (optional)` to your need.
 
 ## Future improvements
-- Parallelly retrieve account data for multiple pages for faster response time.
+- Parallelly retrieve account data for multiple pages for faster response time. Done (using `Promise.all()`).
 - Data stored in Redis should have Time-To-Live if data change in the future.
-- Move the initialisation to app.js and reuse it instead. It's having slow redisClient initialisation in [routes/v1/accounts.js](routes/v1/accounts.js).
+- Move the initialisation to app.js and reuse it instead. `redisClient` initialisation in [routes/v1/accounts.js](routes/v1/accounts.js) may be slow and thus increase response time.
 - Use [Redis-ObjectMapping](https://github.com/redis/redis-om-node) instead of [Redis](https://github.com/redis/node-redis) for easier data handling(?): reducing the effort of parsing String to JSON and preparing for growing `account` data complexity.
